@@ -18,6 +18,7 @@ import javax.inject.Singleton
  */
 @Module
 class AppModule {
+
     private val _context: Context
 
     constructor(application: Application) {

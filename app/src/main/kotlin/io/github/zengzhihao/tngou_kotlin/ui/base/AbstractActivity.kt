@@ -18,6 +18,7 @@ import javax.inject.Inject
  * @author Kela.King
  */
 open class AbstractActivity : RxAppCompatActivity() {
+
     @Inject
     lateinit var _scheduleTransformer: ScheduleTransformer
 

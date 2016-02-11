@@ -16,17 +16,15 @@ import timber.log.Timber
  * @author Kela.King
  */
 class Application : android.app.Application() {
-    private var _appComponent: AppComponent? = null
+
+    private val _appComponent: AppComponent by lazy {
+        DaggerAppComponent.builder().appModule(AppModule(this)).build()
+    }
 
     override fun onCreate() {
         super.onCreate()
 
-        _buildAppComponent()
         _setupAnalytics()
-    }
-
-    private fun _buildAppComponent() {
-        _appComponent = DaggerAppComponent.builder().appModule(AppModule(this)).build()
     }
 
     private fun _setupAnalytics() {
@@ -38,9 +36,10 @@ class Application : android.app.Application() {
         }
     }
 
-    public fun getAppComponent() = _appComponent!!
+    public fun getAppComponent() = _appComponent
 
     companion object {
+
         fun getApplicationContext(context: Context) = context.applicationContext as Application
     }
 }
