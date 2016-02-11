@@ -8,4 +8,4 @@ package io.github.zengzhihao.tngou_kotlin.data.model.exception
 /**
  * @author Kela.King
  */
-class ServerException(detailMessage: String, throwable: Throwable, val apiError: ApiError) : ApiException(detailMessage, throwable)
+class ServerException(detailMessage: String, throwable: Throwable?, val apiError: ApiError) : ApiException(detailMessage, throwable)

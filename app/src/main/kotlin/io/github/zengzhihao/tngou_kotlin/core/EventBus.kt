@@ -20,11 +20,12 @@ class EventBus : Bus() {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             super.post(event)
         } else {
-            _handler.post { super@EventBus.post(event) }
+            _handler.post { super.post(event) }
         }
     }
 
     companion object {
+
         fun newInstance() = EventBus()
     }
 }

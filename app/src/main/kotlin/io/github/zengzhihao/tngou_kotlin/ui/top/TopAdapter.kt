@@ -23,6 +23,7 @@ import java.util.*
  * @author Kela.King
  */
 class TopAdapter(val _context: Context, val _picasso: Picasso) : BaseAdapter() {
+
     private var _result = ArrayList<Top>()
     private var _layoutInflater = LayoutInflater.from(_context)
 
@@ -63,6 +64,7 @@ class TopAdapter(val _context: Context, val _picasso: Picasso) : BaseAdapter() {
     }
 
     class ViewHolder(view: View) {
+
         var icon: ImageView = view.findViewById(R.id.list_item_icon) as ImageView
         var title: TextView = view.findViewById(R.id.list_item_title) as TextView
         var tag: TextView = view.findViewById(R.id.list_item_tag) as TextView

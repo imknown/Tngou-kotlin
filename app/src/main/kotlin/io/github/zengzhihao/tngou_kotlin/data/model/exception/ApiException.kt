@@ -15,9 +15,9 @@ import java.net.SocketTimeoutException
  */
 open class ApiException : RuntimeException {
 
-    constructor(throwable: Throwable) : super(throwable)
+    constructor(throwable: Throwable?) : super(throwable)
 
-    constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable)
+    constructor(detailMessage: String, throwable: Throwable?) : super(detailMessage, throwable)
 
     companion object {
         fun create(retrofitError: RetrofitError): ApiException {
@@ -34,29 +34,27 @@ open class ApiException : RuntimeException {
                     if (throwable is MalformedURLException)
                         return NetworkException("url error", throwable)
 
-                    return NetworkException("network error", throwable!!)
+                    return NetworkException("network error", throwable)
                 }
 
-                1 -> return GsonConversionException("gson convert error", throwable!!)
+                1 -> return GsonConversionException("gson convert error", throwable)
 
                 2 -> {
                     try {
                         val apiError = retrofitError.getBodyAs(ApiError::class.java)
 
                         if (apiError is ApiError) {
-                            return ServerException("server response error:" + " " + apiError.toString(), throwable!!, apiError)
+                            return ServerException("server response error:" + " " + apiError.toString(), throwable, apiError)
                         }
                     } catch(e: Exception) {
-                        return GsonConversionException("gson convert error", throwable!!)
+                        return UnexpectedException("unexpected error", throwable)
                     }
                 }
 
-                3 -> return UnexpectedException("unexpected error", throwable!!)
-
-                else -> return UnexpectedException("unexpected error", throwable!!)
+                else -> return UnexpectedException("unexpected error", throwable)
             }
 
-            return UnexpectedException("unexpected error", throwable!!)
+            return UnexpectedException("unexpected error", throwable)
         }
     }
 }
