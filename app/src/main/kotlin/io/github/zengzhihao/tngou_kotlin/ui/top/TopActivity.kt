@@ -21,11 +21,13 @@ import rx.Observer
 import rx.Subscription
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 /**
  * @author Kela.King
  */
 class TopActivity : AbstractActivity() {
+
     @Inject
     lateinit var _topService: TopService
     @Inject
@@ -33,8 +35,8 @@ class TopActivity : AbstractActivity() {
 
     val _listView by bindView<ListView>(R.id.listView)
 
-    private var _topAdapter: TopAdapter? = null
-    private var _subscription: Subscription? = null
+    private var _topAdapter: TopAdapter by Delegates.notNull<TopAdapter>()
+    private var _subscription: Subscription by Delegates.notNull<Subscription>()
 
     override protected fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +56,7 @@ class TopActivity : AbstractActivity() {
             }
 
             override fun onNext(result: Result) {
-                _topAdapter!!.setResult(result.tngou)
+                _topAdapter.setResult(result.tngou)
             }
         })
     }

@@ -18,6 +18,7 @@ import javax.inject.Inject
  * @author Kela.King
  */
 class HomeActivity : AbstractActivity() {
+
     @Inject
     lateinit var _toastHelper: ToastHelper
     @Inject
@@ -44,8 +45,7 @@ class HomeActivity : AbstractActivity() {
     }
 
     companion object {
-        class OnStartTopActivityEvent {
 
-        }
+        class OnStartTopActivityEvent
     }
 }

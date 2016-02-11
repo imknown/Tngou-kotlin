@@ -10,10 +10,8 @@ import retrofit.Endpoints
 /**
  * @author Kela.King
  */
-class ApiDefaultConfig {
+object ApiDefaultConfig {
 
-    companion object {
-        val END_POINT = Endpoints.newFixedEndpoint("http://www.tngou.net/api", "base-url")
-        val IMG_URL = "http://tnfs.tngou.net/img"
-    }
+    val END_POINT = Endpoints.newFixedEndpoint("http://www.tngou.net/api", "base-url")
+    val IMG_URL = "http://tnfs.tngou.net/img"
 }

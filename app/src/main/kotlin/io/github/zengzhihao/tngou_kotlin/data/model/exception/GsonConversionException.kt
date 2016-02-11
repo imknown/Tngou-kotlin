@@ -8,4 +8,4 @@ package io.github.zengzhihao.tngou_kotlin.data.model.exception
 /**
  * @author Kela.King
  */
-class GsonConversionException(detailMessage: String, throwable: Throwable) : ApiException(detailMessage, throwable)
+class GsonConversionException(detailMessage: String, throwable: Throwable?) : ApiException(detailMessage, throwable)
