@@ -5,10 +5,7 @@
 
 package io.github.zengzhihao.tngou_kotlin.data.model.exception
 
-import org.apache.http.conn.ConnectTimeoutException
 import retrofit.RetrofitError
-import java.net.MalformedURLException
-import java.net.SocketTimeoutException
 
 /**
  * @author Kela.King
@@ -24,18 +21,7 @@ open class ApiException : RuntimeException {
             val throwable = retrofitError.cause
 
             when (retrofitError.kind.ordinal) {
-                0 -> {
-                    if (throwable is SocketTimeoutException)
-                        return NetworkException("socket timeout exception", throwable)
-
-                    if (throwable is ConnectTimeoutException)
-                        return NetworkException("connect timeout exception", throwable)
-
-                    if (throwable is MalformedURLException)
-                        return NetworkException("url error", throwable)
-
-                    return NetworkException("network error", throwable)
-                }
+                0 -> return NetworkException("network error", throwable)
 
                 1 -> return GsonConversionException("gson convert error", throwable)
 
@@ -45,6 +31,8 @@ open class ApiException : RuntimeException {
 
                         if (apiError is ApiError) {
                             return ServerException("server response error:" + " " + apiError.toString(), throwable, apiError)
+                        } else {
+                            return UnexpectedException("unexpected error", throwable)
                         }
                     } catch(e: Exception) {
                         return UnexpectedException("unexpected error", throwable)
@@ -53,8 +41,6 @@ open class ApiException : RuntimeException {
 
                 else -> return UnexpectedException("unexpected error", throwable)
             }
-
-            return UnexpectedException("unexpected error", throwable)
         }
     }
 }

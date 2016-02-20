@@ -46,7 +46,7 @@ class TopActivity : AbstractActivity() {
         _topAdapter = TopAdapter(this, _picasso)
         _listView.adapter = _topAdapter
 
-        _subscription = bindOnIOScheduler_(_topService.list(), ActivityEvent.PAUSE).subscribe(object : Observer<Result> {
+        _subscription = bind_(_topService.list(), ActivityEvent.PAUSE).subscribe(object : Observer<Result> {
             override fun onCompleted() {
                 Timber.i("### onCompleted.")
             }
@@ -63,12 +63,12 @@ class TopActivity : AbstractActivity() {
 
     override protected fun onResume() {
         super.onResume()
-        Timber.i("### onResume. subscription is unsubscribed ? %s", _subscription!!.isUnsubscribed)
+        Timber.i("### onResume. subscription is unsubscribed ? %s", _subscription.isUnsubscribed)
     }
 
     override protected fun onPause() {
         super.onPause()
-        Timber.i("### onPause. subscription is unsubscribed ? %s", _subscription!!.isUnsubscribed)
+        Timber.i("### onPause. subscription is unsubscribed ? %s", _subscription.isUnsubscribed)
     }
 
     companion object {

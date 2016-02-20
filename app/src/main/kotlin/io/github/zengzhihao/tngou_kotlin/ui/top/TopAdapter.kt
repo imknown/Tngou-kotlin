@@ -55,10 +55,12 @@ class TopAdapter(val _context: Context, val _picasso: Picasso) : BaseAdapter() {
                 .placeholder(R.drawable.list_icon_no_image)
                 .error(R.drawable.list_icon_error_image).into(viewHolder.icon)
 
-        viewHolder.title.text = _result[position].title
-        viewHolder.tag.text = _result[position].keywords
-        viewHolder.time.text = DateFormat.getDateTimeInstance().format(_result[position].time)
-        viewHolder.browser.text = "浏览：" + _result[position].count
+        with(viewHolder) {
+            title.text = _result[position].title
+            tag.text = _result[position].keywords
+            time.text = DateFormat.getDateTimeInstance().format(_result[position].time)
+            browser.text = "浏览：" + _result[position].count
+        }
 
         return view
     }
