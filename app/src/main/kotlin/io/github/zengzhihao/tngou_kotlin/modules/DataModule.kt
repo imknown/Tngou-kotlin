@@ -17,7 +17,6 @@ import dagger.Provides
 import io.github.zengzhihao.tngou_kotlin.BuildConfig
 import io.github.zengzhihao.tngou_kotlin.core.EventBus
 import io.github.zengzhihao.tngou_kotlin.core.qualifier.ForApplication
-import io.github.zengzhihao.tngou_kotlin.core.rx.ScheduleTransformer
 import timber.log.Timber
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -29,25 +28,27 @@ import javax.inject.Singleton
 @Module
 class DataModule {
 
-    fun createOkHttpClient(context: Context): OkHttpClient {
+    private fun _createOkHttpClient(context: Context): OkHttpClient {
         val okHttpClient = OkHttpClient()
-        okHttpClient.setConnectTimeout(15000L, TimeUnit.MILLISECONDS)
-        okHttpClient.setReadTimeout(20000L, TimeUnit.MILLISECONDS)
+        with(okHttpClient) {
+            setConnectTimeout(15000L, TimeUnit.MILLISECONDS)
+            setReadTimeout(20000L, TimeUnit.MILLISECONDS)
 
-        if (BuildConfig.DEBUG) {
-            okHttpClient.networkInterceptors().add(StethoInterceptor())
-            okHttpClient.setCache(Cache(File(context.externalCacheDir, "http-cache"),
-                    20 * 1024 * 1024.toLong()))
-        } else {
-            okHttpClient.setCache(Cache(File(context.cacheDir, "http-cache"), 20 * 1024 * 1024.toLong()))
+            if (BuildConfig.DEBUG) {
+                networkInterceptors().add(StethoInterceptor())
+                cache = Cache(File(context.externalCacheDir, "http-cache"),
+                        20 * 1024 * 1024.toLong())
+            } else {
+                cache = Cache(File(context.cacheDir, "http-cache"), 20 * 1024 * 1024.toLong())
+            }
+
+            return this
         }
-
-        return okHttpClient
     }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(@ForApplication context: Context) = createOkHttpClient(context)
+    fun provideOkHttpClient(@ForApplication context: Context) = _createOkHttpClient(context)
 
     @Provides
     @Singleton
@@ -65,10 +66,6 @@ class DataModule {
 
         return picasso
     }
-
-    @Provides
-    @Singleton
-    fun provideReactiveTransformer() = ScheduleTransformer()
 
     @Provides
     @Singleton
