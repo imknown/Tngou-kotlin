@@ -11,14 +11,10 @@ import android.os.Bundle
 import android.widget.ListView
 import butterknife.bindView
 import com.squareup.picasso.Picasso
-import com.trello.rxlifecycle.ActivityEvent
 import io.github.zengzhihao.tngou_kotlin.Application
 import io.github.zengzhihao.tngou_kotlin.R
-import io.github.zengzhihao.tngou_kotlin.lib.api.model.Result
 import io.github.zengzhihao.tngou_kotlin.lib.api.service.TopService
 import io.github.zengzhihao.tngou_kotlin.ui.base.AbstractActivity
-import rx.Observer
-import rx.Subscription
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -36,7 +32,6 @@ class TopActivity : AbstractActivity() {
     val _listView by bindView<ListView>(R.id.listView)
 
     private var _topAdapter: TopAdapter by Delegates.notNull<TopAdapter>()
-    private var _subscription: Subscription by Delegates.notNull<Subscription>()
 
     override protected fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,29 +41,13 @@ class TopActivity : AbstractActivity() {
         _topAdapter = TopAdapter(this, _picasso)
         _listView.adapter = _topAdapter
 
-        _subscription = bind_(_topService.list(), ActivityEvent.PAUSE).subscribe(object : Observer<Result> {
-            override fun onCompleted() {
-                Timber.i("### onCompleted.")
-            }
-
-            override fun onError(e: Throwable) {
-                Timber.e("### onError. error is %s", e)
-            }
-
-            override fun onNext(result: Result) {
-                _topAdapter.setResult(result.tngou)
-            }
-        })
-    }
-
-    override protected fun onResume() {
-        super.onResume()
-        Timber.i("### onResume. subscription is unsubscribed ? %s", _subscription.isUnsubscribed)
-    }
-
-    override protected fun onPause() {
-        super.onPause()
-        Timber.i("### onPause. subscription is unsubscribed ? %s", _subscription.isUnsubscribed)
+        bind(_topService.list())
+                .then {
+                    _topAdapter.setResult(it.tngou)
+                }
+                .fail {
+                    Timber.e("### onError. error is $it")
+                }
     }
 
     companion object {
