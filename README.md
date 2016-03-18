@@ -6,6 +6,6 @@ kotterKnife+dagger2+otto+okhttp+picasso+retrofit+rxjava示例项目，使用kotl
 
 技术交流论坛：
    
-   NORx论坛
+   rxjava社区
    
    http://rxjava.top
