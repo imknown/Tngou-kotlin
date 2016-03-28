@@ -1,33 +1,25 @@
-/*
- * Copyright 2015 zengzhihao.github.io. All rights reserved.
- * Support: http://zengzhihao.github.io
- */
-
-package io.github.zengzhihao.tngou_kotlin.modules
+package io.github.zengzhihao.tngou_kotlin.core.di
 
 import android.content.Context
 import com.facebook.stetho.okhttp.StethoInterceptor
 import com.squareup.okhttp.Cache
 import com.squareup.okhttp.OkHttpClient
-import com.squareup.otto.Bus
 import com.squareup.picasso.OkHttpDownloader
 import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
 import io.github.zengzhihao.tngou_kotlin.BuildConfig
-import io.github.zengzhihao.tngou_kotlin.core.EventBus
+import io.github.zengzhihao.tngou_kotlin.core.qualifier.ApplicationScope
 import io.github.zengzhihao.tngou_kotlin.core.qualifier.ForApplication
 import timber.log.Timber
 import java.io.File
 import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 /**
- * @author Kela.King
+ * Created by kela.king on 16/3/28.
  */
 @Module
-class DataModule {
-
+class NetworkModule {
     private fun _createOkHttpClient(context: Context): OkHttpClient {
         val okHttpClient = OkHttpClient()
         with(okHttpClient) {
@@ -47,15 +39,11 @@ class DataModule {
     }
 
     @Provides
-    @Singleton
+    @ApplicationScope
     fun provideOkHttpClient(@ForApplication context: Context) = _createOkHttpClient(context)
 
     @Provides
-    @Singleton
-    fun provideSharedPreferences(@ForApplication context: Context) = context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
-
-    @Provides
-    @Singleton
+    @ApplicationScope
     fun providePicasso(@ForApplication context: Context, okHttpClient: OkHttpClient): Picasso {
         val picasso = Picasso.Builder(context).downloader(OkHttpDownloader(okHttpClient))
                 .listener { picasso, uri, exception -> Timber.e(exception, "### Failed to load image: %s", uri) }
@@ -66,8 +54,4 @@ class DataModule {
 
         return picasso
     }
-
-    @Provides
-    @Singleton
-    fun provideEventBus(): Bus = EventBus.newInstance()
 }

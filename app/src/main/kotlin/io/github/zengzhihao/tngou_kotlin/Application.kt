@@ -7,24 +7,32 @@ package io.github.zengzhihao.tngou_kotlin
 
 import android.content.Context
 import com.facebook.stetho.Stetho
-import io.github.zengzhihao.tngou_kotlin.components.AppComponent
-import io.github.zengzhihao.tngou_kotlin.components.DaggerAppComponent
-import io.github.zengzhihao.tngou_kotlin.modules.AppModule
+import io.github.zengzhihao.tngou_kotlin.core.di.*
 import timber.log.Timber
+import kotlin.properties.Delegates
 
 /**
  * @author Kela.King
  */
-class Application : android.app.Application() {
+class Application : android.app.Application(), HasComponent<ApplicationComponent> {
 
-    private val _appComponent: AppComponent by lazy {
-        DaggerAppComponent.builder().appModule(AppModule(this)).build()
-    }
+    private var _component by Delegates.notNull<ApplicationComponent>()
 
     override fun onCreate() {
         super.onCreate()
 
+        _setupObjectGraph()
         _setupAnalytics()
+    }
+
+    private fun _setupObjectGraph() {
+        _component = DaggerApplicationComponent.builder()
+                .androidModule(AndroidModule(this))
+                .dataModule(DataModule())
+                .networkModule(NetworkModule())
+                .apiModule(ApiModule())
+                .utilsModule(UtilsModule())
+                .build()
     }
 
     private fun _setupAnalytics() {
@@ -36,10 +44,11 @@ class Application : android.app.Application() {
         }
     }
 
-    public fun getAppComponent() = _appComponent
+    override fun getComponent(): ApplicationComponent {
+        return _component
+    }
 
     companion object {
-
-        fun getApplicationContext(context: Context) = context.applicationContext as Application
+        fun from(context: Context) = context.applicationContext as Application
     }
 }
