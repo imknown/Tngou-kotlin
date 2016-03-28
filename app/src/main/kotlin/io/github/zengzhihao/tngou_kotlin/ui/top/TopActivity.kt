@@ -11,10 +11,11 @@ import android.os.Bundle
 import android.widget.ListView
 import butterknife.bindView
 import com.squareup.picasso.Picasso
-import io.github.zengzhihao.tngou_kotlin.Application
 import io.github.zengzhihao.tngou_kotlin.R
+import io.github.zengzhihao.tngou_kotlin.core.qualifier.ClientVersionName
 import io.github.zengzhihao.tngou_kotlin.lib.api.service.TopService
 import io.github.zengzhihao.tngou_kotlin.ui.base.AbstractActivity
+import io.github.zengzhihao.tngou_kotlin.utils.ToastHelper
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -28,6 +29,10 @@ class TopActivity : AbstractActivity() {
     lateinit var _topService: TopService
     @Inject
     lateinit var _picasso: Picasso
+    @Inject
+    lateinit var _toastHelper: ToastHelper
+    @field:[Inject ClientVersionName]
+    lateinit var _versionName: String
 
     val _listView by bindView<ListView>(R.id.listView)
 
@@ -35,7 +40,6 @@ class TopActivity : AbstractActivity() {
 
     override protected fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Application.getApplicationContext(this).getAppComponent().inject(this)
         setContentView(R.layout.activity_top)
 
         _topAdapter = TopAdapter(this, _picasso)
@@ -44,14 +48,18 @@ class TopActivity : AbstractActivity() {
         bind(_topService.list())
                 .then {
                     _topAdapter.setResult(it.tngou)
+                    _toastHelper.show("Just fucking, never stop. Appversion is " + _versionName)
                 }
                 .fail {
                     Timber.e("### onError. error is $it")
                 }
     }
 
-    companion object {
+    override fun injectMembers() {
+        getComponent().inject(this)
+    }
 
+    companion object {
         fun start(context: Context) = context.startActivity(Intent(context, TopActivity::class.java))
     }
 }

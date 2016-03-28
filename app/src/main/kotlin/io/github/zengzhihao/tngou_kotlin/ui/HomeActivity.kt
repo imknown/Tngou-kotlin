@@ -20,17 +20,17 @@ import javax.inject.Inject
 class HomeActivity : AbstractActivity() {
 
     @Inject
-    lateinit var _toastHelper: ToastHelper
-    @Inject
     lateinit var _bus: Bus
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Application.getApplicationContext(this).getAppComponent().inject(this)
 
         _bus.register(this)
-        _toastHelper.show("Hello Tngou!")
         _bus.post(OnStartTopActivityEvent())
+    }
+
+    override fun injectMembers() {
+        getComponent().inject(this)
     }
 
     @Subscribe
@@ -43,9 +43,6 @@ class HomeActivity : AbstractActivity() {
         _bus.unregister(this)
         super.onDestroy()
     }
-
-    companion object {
-
-        class OnStartTopActivityEvent
-    }
 }
+
+class OnStartTopActivityEvent

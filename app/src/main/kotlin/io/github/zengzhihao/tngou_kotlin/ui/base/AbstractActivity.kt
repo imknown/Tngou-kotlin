@@ -5,9 +5,14 @@
 
 package io.github.zengzhihao.tngou_kotlin.ui.base
 
+import android.os.Bundle
 import com.trello.rxlifecycle.ActivityEvent
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import io.github.zengzhihao.rxpromise.Promise
+import io.github.zengzhihao.tngou_kotlin.Application
+import io.github.zengzhihao.tngou_kotlin.core.di.ApplicationComponent
+import io.github.zengzhihao.tngou_kotlin.core.di.HasComponent
+import io.github.zengzhihao.tngou_kotlin.core.di.Injectable
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -15,7 +20,7 @@ import rx.schedulers.Schedulers
 /**
  * @author Kela.King
  */
-open class AbstractActivity : RxAppCompatActivity() {
+abstract class AbstractActivity : RxAppCompatActivity(), HasComponent<ApplicationComponent>, Injectable {
 
     protected fun <T> bind(observable: Observable<T>) =
             Promise(observable.compose(this.bindToLifecycle<T>())
@@ -26,4 +31,13 @@ open class AbstractActivity : RxAppCompatActivity() {
             Promise(observable.compose(this.bindUntilEvent<T>(activityEvent))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()))
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        injectMembers()
+    }
+
+    override fun getComponent(): ApplicationComponent {
+        return Application.from(this).getComponent()
+    }
 }
