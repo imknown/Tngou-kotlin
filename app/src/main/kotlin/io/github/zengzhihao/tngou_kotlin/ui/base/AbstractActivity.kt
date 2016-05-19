@@ -6,9 +6,9 @@
 package io.github.zengzhihao.tngou_kotlin.ui.base
 
 import android.os.Bundle
+import com.github.zengzhihao.rxpromise.Promise
 import com.trello.rxlifecycle.ActivityEvent
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
-import io.github.zengzhihao.rxpromise.Promise
 import io.github.zengzhihao.tngou_kotlin.Application
 import io.github.zengzhihao.tngou_kotlin.core.di.ApplicationComponent
 import io.github.zengzhihao.tngou_kotlin.core.di.HasComponent
